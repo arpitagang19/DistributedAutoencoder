@@ -1,0 +1,13 @@
+name: DistAutoencoder
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - mpi4py=3.1.1
+  - numpy-base=1.19.2
+  - python=3.8.3
+  - tensorflow-base=2.4.0
+  - pip:
+    - matplotlib==3.3.4
+    - networkx==2.5
+    - tensorflow==2.5.0
