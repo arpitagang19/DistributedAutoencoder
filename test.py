@@ -1,27 +1,31 @@
 import numpy as np
-from GraphTopology import GraphType
 from Data import Data
 from DistAutoencoder import DistAutoencoder
 import os
 import pickle
 from mpi4py import MPI
+import argparse
+
 
 comm = MPI.COMM_WORLD
 num_nodes = comm.Get_size()
 # initialize variables
-N = 100000       # number of data samples
+parser = argparse.ArgumentParser()
+parser.add_argument("-d","--dimension", help="Dimension of the data samples, default value is 20", type=int, default=20)
+parser.add_argument("-K", "--K", help="number of eigenvectors to be estimated, default number is 5", type = int, default=5)
+parser.add_argument("-EG","--eigengap", help="eigengap between Kth and (K+1)th eigenvalues", type = float, default=0.8)
+parser.add_argument("-lr", "--learning_rate", help="learning rate, default value is 0.1", type = float, default=0.1)
+parser.add_argument("-N", "--num_samples", help="learning rate, default value is 100000", type = int, default=10000)
+args = parser.parse_args()
 
-d = 20           # dimension of data samples
-K = 5            # number of eigenvectors to be estimated
-eigengap = 0.8  # eigen gap between K+1 and Kth eigenvalue
+N = args.num_samples                       # number of data samples
 
-gtype = 'erdos-renyi'   # type of graph: erdos-renyi, cycle, star
-# p = 0.5                 # connectivity for erdos renyi graph
-lr = 0.1        # initial step size for DSA
-type = 1
-
-
-
+d = args.dimension                  # dimension of data samples
+K = args.K                          # number of eigenvectors to be estimated
+eigengap = args.eigengap            # eigen gap between K+1 and Kth eigenvalue
+lr = args.learning_rate             # initial step size for DSA
+type = 1                            # type = 1: eigenvalues of data covariance matrix are distinct,
+                                                # 2: repeated eigenvalues of data covariance matrix
 # generate synthetic data
 test_data = Data("synthetic")
 x_train = test_data.generateSynthetic(d, N, eigengap, K, type)
